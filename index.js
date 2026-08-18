@@ -697,7 +697,7 @@ function showRollingCredits(onDone) {
     return;
   }
 
-  const duration = Math.max(22000, rows.length * 3600);
+  const duration = Math.max(44000, rows.length * 7200);
   animationBlockUntil = Date.now() + duration + 10000;
   const overlay = document.createElement("div");
   overlay.className = "draft-credits";
