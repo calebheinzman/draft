@@ -115,6 +115,16 @@ Hosted on GitHub Pages: **https://calebheinzman.github.io/draft/**
 Everything runs client-side. No accounts, no server, no data leaves the browser
 except the read-only calls to Sleeper when you sync a league.
 
+## Development
+
+Run a live server locally:
+
+```bash
+npm run dev
+```
+
+This uses `live-server` via `npx` and automatically reloads when files change.
+
 ## Files
 
 - `index.html` — markup and the Sleeper sync panel.
