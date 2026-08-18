@@ -1,0 +1,10 @@
+{
+  "name": "all-in-draft",
+  "private": true,
+  "version": "1.0.0",
+  "description": "All-In — Draft Order Card Game",
+  "scripts": {
+    "live": "npx -y live-server --port=3000 --open=index.html --watch=.",
+    "dev": "npm run live"
+  }
+}
