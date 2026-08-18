@@ -2,16 +2,24 @@
 // DOM, so the same code that runs the app can be driven from Node — see
 // tools/simulate.mjs, which is how the numbers below were measured.
 
-// Tuned so an average game runs 3-5 resets (Bomb / Nuke / Cluster Bomb),
-// 0-reset games are ~2%, and ~2-5% of games reach 10 or more. Measured over
-// 40k games per league size:
+// Tuned so an average draft runs 3-5 resets (Bomb / Nuke / Cluster Bomb),
+// 0-reset drafts are ~2%, and a few percent reach 10 or more.
 //
-//   players | mean resets | P(0) | p90 | max | P(>=10) | mean draws
-//        8  |    3.5      | 1.7% |  6  |  21 |   0.7%  |    23
-//       10  |    3.9      | 2.5% |  7  |  26 |   1.9%  |    30
-//       12  |    4.2      | 1.6% |  7  |  25 |   3.7%  |    37
-//       14  |    4.6      | 2.1% |  7  |  28 |   5.4%  |    44
-//       16  |    4.8      | 1.8% |  7  |  31 |   7.2%  |    51
+// Everything here scales off the number of *drafters* — people actually
+// drawing cards — not the size of the league. A sit-out is dealt a locked slot
+// and never draws, so a 12-member league with 6 sitting out plays exactly like
+// a 6-person league. Measured over 15k drafts each:
+//
+//   drafters | reset cards | mean | P(0) | p90 | max | P(>=10) | mean draws
+//         2  |     19      | 4.1  | 5.2% |  8  |  19 |   6.4%  |     9
+//         4  |     12      | 4.7  | 1.6% |  9  |  24 |   7.8%  |    16
+//         6  |      9      | 4.3  | 2.3% |  8  |  24 |   1.3%  |    21
+//         8  |      8      | 4.3  | 1.7% |  8  |  22 |   2.4%  |    26
+//        10  |      7      | 3.9  | 2.3% |  7  |  26 |   1.9%  |    30
+//        12  |      7      | 4.2  | 2.0% |  7  |  21 |   3.6%  |    36
+//        14  |      7      | 4.6  | 2.0% |  7  |  24 |   5.7%  |    44
+//        16  |      6      | 3.6  | 2.6% |  6  |  22 |   1.9%  |    43
+//        20  |      6      | 3.9  | 2.4% |  6  |  22 |   3.4%  |    55
 //
 // The knobs interact sharply — a reset clears the board, which means more
 // draws, which means more resets — so re-run the simulator before changing
@@ -21,9 +29,25 @@
 const DECK = {
   copies: 3, // copies of every non-reset card
   specials: ["Queen", "Jack", "Joker", "King", "Ace", "Mirror"],
-  resets: ["Bomb", "Bomb", "Bomb", "Bomb", "Bomb", "Nuke", "Cluster Bomb"],
-  leadResetWindow: 1.25, // lead reset card lands in the first 1.25 * players cards
+  resetCards, // scales with the drafter count — see below
+  leadResetWindow: 1.25, // lead reset card lands in the first 1.25 * drafters cards
 };
+
+// The reset cards for a draft of `drafters` people.
+//
+// A short draft has fewer draws to hide a bomb in, so it needs a denser deck
+// to average the same number of resets; a long one needs a thinner deck or it
+// runs away. There is no clean closed form for where that balance sits — the
+// feedback loop above is what makes it non-linear — so this is an empirical
+// fit, verified from 2 to 24 drafters by tools/simulate.mjs.
+//
+// A one-person draft is the exception: it is over in about three draws and
+// there is no order to scramble, so it sits below the band no matter what.
+function resetCards(drafters) {
+  const count = Math.max(6, Math.round(4.5 + 28 / Math.max(2, drafters)));
+  // One Nuke and one Cluster Bomb; the rest are plain Bombs.
+  return [...Array(count - 2).fill("Bomb"), "Nuke", "Cluster Bomb"];
+}
 
 const RESET_CARDS = new Set(["Bomb", "Nuke", "Cluster Bomb"]);
 
@@ -179,7 +203,8 @@ function createGame({ chooseSpot } = {}) {
       for (const i of open) deck.push(i + 1);
     }
 
-    const resets = [...DECK.resets];
+    // Keyed to the drafter count, not the roster: sit-outs never draw.
+    const resets = DECK.resetCards(size);
     const lead = resets.pop();
     deck.push(...resets);
     shuffleArray(deck);

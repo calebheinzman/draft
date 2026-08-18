@@ -69,22 +69,38 @@ player as "placed" when they look for the first or last one on the board.
 
 Bomb, Nuke and Cluster Bomb are the "resets". The deck is tuned so a draft runs
 **3–5 resets on average** — enough scrambling to be worth watching, not so much
-that nobody ever gets placed. Measured over 40,000 simulated drafts:
+that nobody ever gets placed.
 
-| League size | Average resets | No resets at all | Reaches 10+ | Cards drawn |
-| --- | --- | --- | --- | --- |
-| 8  | 3.5 | 1.9% | 0.7% | ~23 |
-| 10 | 3.9 | 2.3% | 2.0% | ~30 |
-| 12 | 4.2 | 1.7% | 3.6% | ~37 |
-| 14 | 4.5 | 2.1% | 5.3% | ~44 |
+That holds no matter how many people are drafting. The deck is built from the
+number of **drafters**, not the size of the league, so six people drafting play
+the same game whether the other six are sitting out or were never in the league
+at all. Measured over 15,000 simulated drafts each:
+
+| Drafters | Reset cards in deck | Average resets | No resets at all | Reaches 10+ | Cards drawn |
+| --- | --- | --- | --- | --- | --- |
+| 2  | 19 | 4.1 | 5.1% | 6.5% | ~9 |
+| 4  | 12 | 4.7 | 1.5% | 7.7% | ~16 |
+| 6  | 9  | 4.3 | 2.5% | 1.3% | ~21 |
+| 8  | 8  | 4.2 | 1.3% | 2.4% | ~26 |
+| 10 | 7  | 3.9 | 2.5% | 2.0% | ~30 |
+| 12 | 7  | 4.2 | 1.7% | 3.9% | ~37 |
+| 14 | 7  | 4.5 | 2.0% | 5.5% | ~44 |
+| 16 | 6  | 3.6 | 2.4% | 2.0% | ~43 |
+| 20 | 6  | 3.9 | 2.3% | 3.1% | ~55 |
 
 So a quiet draft still usually sees one or two explosions, and roughly one in
 thirty goes properly off the rails.
 
-The deck is three copies of every ordinary card (`1..N`, King, Queen, Jack,
-Joker, Ace, Mirror) plus five `Bomb`, one `Nuke` and one `Cluster Bomb`. One
-reset card is dealt into the opening stretch of the deck — without it, about one
-draft in seven would finish before any bomb ever turned up.
+The deck is three copies of every ordinary card (one per *open* slot, plus King,
+Queen, Jack, Joker, Ace, Mirror) and a handful of reset cards — one Nuke, one
+Cluster Bomb, the rest plain Bombs. The reset count shrinks as the draft grows:
+a short draft has fewer draws to hide a bomb in and needs a denser deck to
+average the same number of resets, while a long one needs a thinner deck or it
+runs away. One reset card is dealt into the opening stretch of the deck —
+without it, about one draft in seven would finish before any bomb turned up.
+
+A one-person draft is the exception: it's over in about three draws, and there's
+no order left to scramble.
 
 These knobs interact sharply: a reset clears the board, which means more draws,
 which means more resets. Run `node tools/simulate.mjs` after changing `DECK` in
