@@ -1,0 +1,503 @@
+/* ---- Design tokens ---------------------------------------------------- */
+:root {
+  --ink: #2c2230;
+  --muted: #93899a;
+  --primary: #7c2d5c;
+  --primary-600: #692650;
+  --primary-050: #f7e9f1;
+  --gold: #c58a3d;
+  --surface: #ffffff;
+  --surface-2: #f7f2f6;
+  --border: #ece3ea;
+  --danger: #c0392b;
+  --success: #2e7d32;
+  --radius: 18px;
+  --radius-sm: 11px;
+  --radius-pill: 999px;
+  --shadow: 0 1px 2px rgba(44, 34, 48, 0.05), 0 12px 34px rgba(44, 34, 48, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+/* Several blocks below set `display`, which would otherwise beat the `hidden`
+   attribute the setup UI toggles. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: radial-gradient(1100px 560px at 50% -8%, #fbeef6 0%, #f2eaf0 48%, #efe7ed 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { margin: 0; line-height: 1.2; }
+
+.app {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 20px 18px 72px;
+}
+
+.section-label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---- Top bar: brand + slim setup ------------------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.brand {
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--primary);
+}
+
+.setup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.setup-group {
+  display: flex;
+  gap: 6px;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+/* Dimmed rather than hidden once the draft starts — a header that vanishes
+   reads as "the app broke", and the layout would jump. */
+.setup.is-locked {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ---- Setup: who's playing --------------------------------------------- */
+.lineup {
+  margin-bottom: 22px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 12px;
+}
+
+.chip {
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+}
+
+.chip:hover { border-color: var(--primary); color: var(--primary); }
+
+/* Marked as sitting out: struck through and drained of colour. */
+.chip.is-out {
+  background: var(--surface-2);
+  border-style: dashed;
+  color: var(--muted);
+  text-decoration: line-through;
+  opacity: 0.75;
+}
+
+.lineup-count {
+  margin-left: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.lineup-hint {
+  margin: 0 0 12px;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+/* ---- Inputs & buttons ------------------------------------------------- */
+input[type="text"] {
+  min-width: 0;
+  width: 190px;
+  max-width: 46vw;
+  padding: 9px 12px;
+  font-size: 0.92rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input[type="text"]:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-050);
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  padding: 9px 15px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 0.08s, background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.btn:hover { border-color: var(--primary); color: var(--primary); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(124, 45, 92, 0.26);
+}
+.btn-primary:hover { background: var(--primary-600); border-color: var(--primary-600); color: #fff; }
+
+/* ---- Sleeper status / picker ----------------------------------------- */
+.sleeper-status {
+  font-size: 0.88rem;
+  min-height: 0;
+  margin: -8px 0 0;
+  text-align: right;
+}
+.sleeper-status:not(:empty) { margin-bottom: 14px; }
+.sleeper-status.loading { color: var(--muted); font-style: italic; }
+.sleeper-status.success { color: var(--success); }
+.sleeper-status.error   { color: var(--danger); }
+
+.sleeper-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.sleeper-picker:not(:empty) { margin-bottom: 16px; }
+.sleeper-picker button {
+  padding: 7px 12px;
+  font-size: 0.86rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.sleeper-picker button:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ---- Board: the outcome ---------------------------------------------- */
+.board {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 20px;
+  margin-bottom: 26px;
+}
+
+.table-container { overflow-x: auto; }
+
+table { border-collapse: separate; border-spacing: 8px; margin: 0 -4px; }
+
+#draftersRow td {
+  vertical-align: top;
+  min-width: 78px;
+  height: 84px;
+  padding: 9px 8px;
+  text-align: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+#draftersRow td > div:first-child {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+#draftersRow td .name-div {
+  margin-top: 9px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  word-break: break-word;
+}
+
+#draftersRow td.filled {
+  background: var(--primary-050);
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+#draftersRow td.filled > div:first-child { color: var(--primary); }
+
+/* A sit-out's slot: settled before the game started, and immovable. Gold and
+   dashed rather than the primary tint, so a pin never reads as a slot somebody
+   won. Must stay after the .filled rules — same specificity, source order wins. */
+#draftersRow td.locked {
+  background: var(--surface-2);
+  border-style: dashed;
+  border-color: var(--gold);
+  box-shadow: none;
+}
+#draftersRow td.locked > div:first-child { color: var(--gold); }
+#draftersRow td.locked .name-div {
+  color: var(--muted);
+  font-weight: 500;
+}
+#draftersRow td.locked .name-div::after {
+  content: " 🔒";
+  font-size: 0.8em;
+}
+
+/* ---- Sitting-out strip under the board -------------------------------- */
+.sitting-out {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.sitting-out-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* Deliberately not a .chip — that carries cursor:pointer and button sizing,
+   which would be a lie on a static span. */
+.chip-locked {
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 4px 11px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.chip-locked b { color: var(--gold); }
+
+/* ---- Turn: the hero --------------------------------------------------- */
+.turn {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.active-player {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 18px;
+}
+
+.card {
+  width: 150px;
+  height: 210px;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow), inset 0 0 0 1px var(--border), inset 0 0 0 6px var(--surface), inset 0 0 0 7px var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#mostRecentCard {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+  padding: 10px;
+  word-break: break-word;
+}
+
+.card-effect {
+  min-height: 1.3em;
+  margin: 0 auto 20px;
+  max-width: 460px;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.btn-draw {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 14px 40px;
+  border-radius: var(--radius-pill);
+}
+
+@keyframes shimmer {
+  0% { background-position: -240px 0; }
+  100% { background-position: 240px 0; }
+}
+
+.card.specialCard {
+  background-image: linear-gradient(100deg, #f7e9ff 18%, #ffffff 46%, #e6f7ff 74%);
+  background-size: 320px 100%;
+  animation: shimmer 2.2s infinite linear alternate;
+}
+.card.specialCard #mostRecentCard { color: var(--gold); }
+
+/* ---- Rosters: compact secondary lists -------------------------------- */
+.rosters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.roster {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+}
+
+.roster ol,
+.roster ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.roster li {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 6px 13px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* the player on the clock */
+#remainingPlayersList li:first-child {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+.mini {
+  margin-left: auto;
+  border: none;
+  background: none;
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+.mini:hover { text-decoration: underline; }
+
+/* ---- Disclosures: ledger + rules ------------------------------------- */
+.disclosure {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 18px;
+  margin-bottom: 12px;
+}
+
+.disclosure > summary {
+  cursor: pointer;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 12px 0;
+  list-style: none;
+}
+.disclosure > summary::-webkit-details-marker { display: none; }
+.disclosure > summary::before { content: "▸ "; color: var(--primary); }
+.disclosure[open] > summary::before { content: "▾ "; }
+
+#ledger {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 12px;
+}
+#ledger li {
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding: 5px 2px;
+  border-bottom: 1px dashed var(--border);
+}
+
+#rulesList {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+#rulesList li {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+}
+#rulesList li h4 { margin: 0 0 5px; font-size: 0.95rem; color: var(--primary); }
+#rulesList li p { margin: 0; font-size: 0.86rem; color: var(--muted); }
+
+/* ---- Responsive ------------------------------------------------------- */
+@media (max-width: 620px) {
+  .topbar { justify-content: center; text-align: center; }
+  .setup { flex-direction: column; align-items: stretch; width: 100%; }
+  .setup-group { width: 100%; }
+  .setup-group input[type="text"] { flex: 1; width: auto; max-width: none; }
+  .check { justify-content: center; }
+  .sleeper-status, .sleeper-picker { text-align: center; justify-content: center; }
+  .rosters { grid-template-columns: 1fr; }
+}

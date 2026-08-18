@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All-In — Draft Order</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">All&#8209;In</div>
+      <div class="setup" id="setupControls">
+        <div class="setup-group">
+          <input type="text" id="sleeperInput" placeholder="Sleeper league ID or username" />
+          <button id="sleeperSyncBtn" class="btn btn-primary" onclick="handleSleeperSync()">Sync</button>
+        </div>
+        <div class="setup-group">
+          <input type="text" id="playerNameInput" placeholder="Add a player" />
+          <button class="btn" id="addPlayerBtn" onclick="addPlayer()">Add</button>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="sleeperAppend" /> append
+        </label>
+      </div>
+      <button class="btn" id="resetBtn" onclick="resetToSetup()" hidden>Reset</button>
+    </header>
+
+    <div id="sleeperStatus" class="sleeper-status"></div>
+    <div id="sleeperLeaguePicker" class="sleeper-picker"></div>
+
+    <!-- Setup only: who's actually drafting -->
+    <section class="lineup" id="lineup" hidden>
+      <div class="section-label">
+        Who's playing?
+        <span class="lineup-count" id="lineupCount"></span>
+      </div>
+      <div class="chips" id="lineupChips"></div>
+      <p class="lineup-hint">
+        Tap anyone who isn't drafting — they'll be dealt a random slot and locked there.
+      </p>
+      <button class="btn btn-primary" id="startDraftBtn" onclick="startDraft()">Start Draft</button>
+    </section>
+
+    <!-- The outcome everyone watches -->
+    <section class="board">
+      <div class="section-label">Draft Order</div>
+      <div class="table-container">
+        <table id="playerTable">
+          <thead>
+            <tr>
+              <th colspan="12" id="draft-order" hidden>Draft Order</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="draftersRow"></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="sitting-out" id="sittingOut" hidden></div>
+    </section>
+
+    <!-- The turn: the hero of the screen -->
+    <section class="turn">
+      <h2 class="active-player">Active Player:</h2>
+      <div class="card" id="card">
+        <p id="mostRecentCard"></p>
+      </div>
+      <p id="cardEffect" class="card-effect"></p>
+      <button class="btn btn-primary btn-draw" onclick="drawCard()" disabled>Draw Card</button>
+    </section>
+
+    <!-- Secondary: who's waiting, who's done -->
+    <section class="rosters">
+      <div class="roster">
+        <div class="section-label">
+          Up next
+          <button class="mini" onclick="randomizePlayers()">shuffle</button>
+        </div>
+        <ol id="remainingPlayersList"></ol>
+      </div>
+      <div class="roster">
+        <div class="section-label">Chilling Lounge</div>
+        <ul id="movedPlayersList"></ul>
+      </div>
+    </section>
+
+    <details class="disclosure">
+      <summary>Ledger</summary>
+      <ol id="ledger"></ol>
+    </details>
+
+    <details class="disclosure">
+      <summary>Special cards &amp; rules</summary>
+      <ul id="rulesList"></ul>
+    </details>
+  </div>
+
+  <script src="sleeper.js"></script>
+  <script src="game.js"></script>
+  <script src="index.js"></script>
+</body>
+
+</html>
