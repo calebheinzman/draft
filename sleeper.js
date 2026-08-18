@@ -65,7 +65,13 @@ async function leagueMembers(leagueId) {
   return users.map((u) => {
     const teamName = u.metadata && u.metadata.team_name ? u.metadata.team_name.trim() : "";
     const name = (u.display_name && u.display_name.trim()) || teamName || u.user_id;
-    return { id: u.user_id, name, teamName };
+    const avatar = (u.metadata && u.metadata.avatar) || u.avatar || "";
+    const avatarUrl = avatar
+      ? avatar.startsWith("http")
+        ? avatar
+        : `https://sleepercdn.com/avatars/thumbs/${avatar}`
+      : "";
+    return { id: u.user_id, name, teamName, avatarUrl };
   });
 }
 
